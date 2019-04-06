@@ -40,9 +40,12 @@ int main() {
         }
         command.push_back("-o");
         command.push_back(obj_file);
-        if(fork()) {
+        command.push_back("-c");
+        command.push_back(filename);
+
+        if(pid_t id = fork()) {
             int status;
-            wait(&status); //block until child finishes
+            waitpid(id, &status, 0); //block until child finishes
             //we are parent
         } else {
             for(auto& f : command) {
@@ -63,4 +66,39 @@ int main() {
             //oh shoot, we made this already. It's command.
         }
     }
+  //step 6 DONE
+  //g++ [LINKING FLAGS] -o output [OBJECT FILES] 
+  vector<string> command;
+  command.push_back("g++");
+  for(auto &i: buildfile.get_linker_flags()){
+    command.push_back(i);
+  }
+  command.push_back("-o");
+  command.push_back(buildfile.get_executable_name());
+  for(auto &i: cpp_filename){
+    command.push_back(convert_to_obj_file(i));
+  }
+
+
+  for(auto& f : command) {
+    cout << f << " ";
+  }
+  cout << endl;
+  vector<char*> exec_args;
+  for(auto& f : command) {
+    exec_args.push_back((char*)f.c_str());
+  }
+  exec_args.push_back(nullptr);
+  if(pid_t id = fork()) {
+    int status;
+    waitpid(id, &status, 0); //block until child finishes
+    //we are parent
+  }
+  else{
+    if(execvp("g++", exec_args.data())) {
+      return -1; //exec errored, so we error
+    }
+  }
+
+
 }

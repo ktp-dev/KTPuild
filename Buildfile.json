@@ -1,0 +1,6 @@
+{
+    "Name": "QA_test1",
+    "Flags": ["-Wall", "-pedantic", "-std=c++1z"],
+    "Postcmd": "echo \"hi\"",
+    "Sources": ["Buildfile.cpp", "main.cpp", "CppFile.cpp"]
+}

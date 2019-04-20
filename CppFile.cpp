@@ -6,19 +6,6 @@
 //  Copyright © 2019 Nathan Brown. All rights reserved.
 //
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
-#include <stdio.h>
-#include "CppFile.h"
-
-bool has_changed(std::string filename){
-  return true;
-}
-<<<<<<< HEAD
-=======
-
 #include <stdio.h>
 #include "CppFile.h"
 #include <sys/types.h>
@@ -63,9 +50,6 @@ bool has_changed(std::string filename){
   return TSComp(cppTime, objTime);
 }
 
->>>>>>> a bit late but its still here
-=======
->>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
 std::string convert_to_obj_file(std::string cpp_file){
   auto it = cpp_file.find_last_of(".");
 

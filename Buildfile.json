@@ -3,12 +3,4 @@
     "Flags": ["-Wall", "-pedantic", "-std=c++1z"],
     "Postcmd": "echo \"hi\"",
     "Sources": ["Buildfile.cpp", "main.cpp", "CppFile.cpp"]
-<<<<<<< HEAD
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> a bit late but its still here
-=======
-}
->>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41

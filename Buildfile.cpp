@@ -11,14 +11,18 @@
 #include <fstream>
 #include "nlohmann/json.hpp"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #include <iostream>
 #include <stdexcept>
 >>>>>>> a bit late but its still here
+=======
+>>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
 
 using namespace std;
 using namespace nlohmann;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 Buildfile :: Buildfile(){
   json data;
@@ -35,11 +39,17 @@ Buildfile :: Buildfile(){
 
 
 >>>>>>> a bit late but its still here
+=======
+Buildfile :: Buildfile(){
+  json data;
+  ifstream fs("Buildfile.json");
+>>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
   fs >> data;
 
   //set executable name
   executable = data["Name"];
   //set the compilation flags
+<<<<<<< HEAD
 <<<<<<< HEAD
   for(auto &i: data["Flags"]){
     compilation_flags.push_back(i);
@@ -47,15 +57,23 @@ Buildfile :: Buildfile(){
   for (auto &i: data["Flags"]) {
       compilation_flags.push_back(i);
 >>>>>>> a bit late but its still here
+=======
+  for(auto &i: data["Flags"]){
+    compilation_flags.push_back(i);
+>>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
   }
   //set teh linker flags
   linker_flags = compilation_flags;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
   for(auto &i: data["Sources"]){
     cpp_files.push_back(i);
   }
 
+<<<<<<< HEAD
 =======
   for (auto &i: data["Sources"]) {
       cpp_files.push_back(i);
@@ -63,6 +81,8 @@ Buildfile :: Buildfile(){
 
 
 >>>>>>> a bit late but its still here
+=======
+>>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
 }
 
 

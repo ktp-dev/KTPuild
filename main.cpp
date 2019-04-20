@@ -18,6 +18,9 @@ int main() {
      * 6) done!
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
 
     Buildfile buildfile;
     vector<string> cpp_filename = buildfile.get_cpp_files(); //1
@@ -45,6 +48,7 @@ int main() {
         command.push_back(filename);
 
         if(pid_t id = fork()) {
+<<<<<<< HEAD
 =======
     try {
         Buildfile buildfile;
@@ -123,11 +127,16 @@ int main() {
         exec_args.push_back(nullptr);
         if (pid_t id = fork()) {
 >>>>>>> a bit late but its still here
+=======
+>>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
             int status;
             waitpid(id, &status, 0); //block until child finishes
             //we are parent
         } else {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
             for(auto& f : command) {
                 cout << f << " ";
             }
@@ -181,6 +190,7 @@ int main() {
   }
 
 
+<<<<<<< HEAD
 =======
             if (execvp("g++", exec_args.data())) {
                 return -1; //exec errored, so we error
@@ -192,4 +202,6 @@ int main() {
         return -1;
     }
 >>>>>>> a bit late but its still here
+=======
+>>>>>>> a9e3d9a1b0e0eaecf23b271c88f9dcfdea9dfd41
 }

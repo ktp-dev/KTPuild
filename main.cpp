@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 using namespace std;
 
@@ -28,6 +29,10 @@ int main() {
         //now we know what cpp files have changed
         if (changed.empty())
             return 0; //3
+
+        int num_processes = 0;
+        const int MAX_PROCESSES = 4;
+        
         for (string &filename : changed) {
             //for every changed file, issue g++ command
             string obj_file = convert_to_obj_file(filename);
@@ -43,12 +48,17 @@ int main() {
             command.push_back("-c");
             command.push_back(filename);
 
-            if (pid_t id = fork()) {
+            if (fork()) {
+                ++num_processes;
                 int status;
-                waitpid(id, &status, 0); //block until child finishes
-                //we are parent
-                if (!WIFEXITED(status) || WEXITSTATUS(status)) {
-                    return -1;
+
+                if (num_processes == MAX_PROCESSES) {
+                    wait(&status); //block until child finishes
+                    //we are parent
+                    if (!WIFEXITED(status) || WEXITSTATUS(status)) {
+                        return -1;
+                    }
+                    --num_processes;
                 }
             } else {
                 for (auto &f : command) {
@@ -67,6 +77,12 @@ int main() {
                 //we call exec with the null terminated list of c strings as arguments
                 //first arg is "g++" aka name of program
                 //oh shoot, we made this already. It's command.
+            }
+        }
+        int status;
+        while (wait(&status) > 0) {
+            if (!WIFEXITED(status) || WEXITSTATUS(status)) {
+                 return -1;
             }
         }
         //step 6 DONE

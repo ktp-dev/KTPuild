@@ -1,3 +1,6 @@
+QA_test1
+*.o
+.DS_Store
 .idea
 .vscode
 *.swp

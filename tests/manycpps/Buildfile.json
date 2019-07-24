@@ -1,0 +1,6 @@
+{
+    "Name": "QA_test1",
+    "Flags": ["-Wall", "-pedantic", "-std=c++11"],
+    "Postcmd": "echo \"hi\"",
+    "Sources": ["dummy1.cpp","dummy2.cpp","dummy3.cpp","dummy4.cpp","dummy5.cpp","dummy6.cpp","dummy7.cpp","dummy8.cpp","dummy9.cpp","dummy10.cpp"]
+}

@@ -13,16 +13,16 @@ class Buildfile {
         Buildfile();
         //this class is responsible for opening and parsing the json file. If no such file, provides defaults.
         //if file is invalid JSON/schema, throws an error
-  std::vector<std::string> get_cpp_files(){
+  std::vector<std::string> get_cpp_files() const {
     return cpp_files;
   }
-  std::vector<std::string> get_compilation_flags(){
+  std::vector<std::string> get_compilation_flags() const {
     return compilation_flags;
   }
-  std::vector<std::string> get_linker_flags(){
+  std::vector<std::string> get_linker_flags() const {
     return linker_flags;
   }
-  std::string get_executable_name(){
+  std::string get_executable_name() const {
     return executable;
   }
 

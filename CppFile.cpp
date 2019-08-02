@@ -6,7 +6,7 @@
 //  Copyright © 2019 Nathan Brown. All rights reserved.
 //
 
-#include <stdio.h>
+#include <cstdio>
 #include "CppFile.h"
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -15,25 +15,19 @@
 #include <ctime>
 
 
-bool TSComp(timespec cpp, timespec obj) {
-    //Returns true if last obj change happened before last cpp change.
-    if (cpp.tv_sec == obj.tv_sec)
-        return cpp.tv_nsec > obj.tv_nsec;
-    else
-        return cpp.tv_sec > obj.tv_sec;
-}
-
 
 struct timespec getTimeSpec(const std::string &filename) {
     struct stat sb;
 
+    //see if the filename exists
     if (stat(filename.c_str(), &sb) == -1) {
-        struct timespec currTime;
-        currTime = {0, 0};
+        //if not, construct a default one. 0, 0 represents 0 seconds since the epoch
+        struct timespec currTime = {0, 0};
         return currTime;
     }
 
     struct timespec timeStampCpp;
+    //MacOS and Linux differ in the name of the timespec struct that contains the last modified time. Use #ifdef to only compile the correct line for a given platform (Mac or Linux)
 #ifdef __APPLE__
     timeStampCpp = sb.st_mtimespec;
 #else
@@ -42,19 +36,25 @@ struct timespec getTimeSpec(const std::string &filename) {
     return timeStampCpp;
 }
 
-bool has_changed(std::string filename){
+//Returns true if the lhs is older than the rhs side
+bool operator<(struct timespec lhs, struct timespec rhs) {
+    if (lhs.tv_sec == rhs.tv_sec)
+        return lhs.tv_nsec < rhs.tv_nsec;
+    else
+        return lhs.tv_sec < rhs.tv_sec;
+}
+
+bool has_changed(const std::string& filename){
   struct timespec cppTime = getTimeSpec(filename);
   std::string objFilename = convert_to_obj_file(filename);
   struct timespec objTime = getTimeSpec(objFilename);
 
-  return TSComp(cppTime, objTime);
+  return objTime < cppTime;
 }
 
-std::string convert_to_obj_file(std::string cpp_file){
-  auto it = cpp_file.find_last_of(".");
-
-  cpp_file.replace(it, 4, ".o");
-
-  return cpp_file;
-
+std::string convert_to_obj_file(const std::string& cpp_file){
+    size_t len = cpp_file.find_last_of("."); //don't know the file extension. Can be ".c", ".cc", ".cpp", or something else. Not safe to assume it is ".cpp"
+    std::string obj_file{cpp_file.begin(), cpp_file.begin() + len}; //make a copy of the filename up to but not including the "." character
+    obj_file += ".o";
+    return obj_file;
 }

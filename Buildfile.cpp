@@ -33,7 +33,7 @@ Buildfile :: Buildfile(){
   for(auto &i: data["Flags"]){
     compilation_flags.push_back(i);
   }
-  //set teh linker flags
+  //set the linker flags
   linker_flags = compilation_flags;
 
   for(auto &i: data["Sources"]){

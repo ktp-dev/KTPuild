@@ -1,6 +1,6 @@
 
 CXX=g++
-CXXFLAGS=-Wall -pedantic -Werror -std=c++1z
+CXXFLAGS=-Wall -pedantic -Werror -std=c++1z -g3
 
 EXE=KTPuild
 

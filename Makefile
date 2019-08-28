@@ -11,6 +11,7 @@ OBJS=${SOURCES:.cpp=.o}
 
 KTPuild: ${OBJS}
 	${CXX} ${CXXFLAGS} $^ -o $@
+	rm *.o
 
 %.o: %.cpp
 	${CXX} ${CXXFLAGS} -c $^ -o $@

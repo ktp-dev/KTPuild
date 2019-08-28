@@ -9,12 +9,12 @@ class Buildfile {
         std::vector<std::string> compilation_flags;
         std::vector<std::string> linker_flags;
         std::string executable;
-    public:
-        Buildfile();
-        //this class is responsible for opening and parsing the json file. If no such file, provides defaults.
-        //if file is invalid JSON/schema, throws an error
+public:
+  //this class is responsible for opening and parsing the json file.
+  //if file does not exist, or is invalid JSON/schema, throws an error
+  Buildfile();
   std::vector<std::string> get_cpp_files() const {
-    return cpp_files;
+      return cpp_files;
   }
   std::vector<std::string> get_compilation_flags() const {
     return compilation_flags;
@@ -25,6 +25,5 @@ class Buildfile {
   std::string get_executable_name() const {
     return executable;
   }
-
 };
 #endif

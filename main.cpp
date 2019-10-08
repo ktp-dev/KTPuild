@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sys/types.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
 using namespace std;
 const int MAX_PROCESSES = 4;

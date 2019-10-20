@@ -123,7 +123,7 @@ int main() {
                 changed.push_back(file);
         }
         // if there is nothing to recompile and the executable has been created we are done
-        if (changed.empty() && is_created(Buildfile.executable))
+        if (changed.empty() && is_created(buildfile.get_executable_name()))
             return 0; //3
 
         compile_object_files(buildfile, changed); //4

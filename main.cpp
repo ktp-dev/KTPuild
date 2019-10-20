@@ -4,10 +4,25 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <getopt.h>
 
 using namespace std;
 const int MAX_PROCESSES = 4;
 const char* const COMPILER = "g++";
+
+const string help= "\n\
+KTPuild\n\
+    An application to help making the compiling of large projects easier. The\n\
+    intended use for EECS 280 and 281 students attending the University of \n\
+    Michigan. Built and maintained by Kappa Theta Pi Alpha Chapter. For reporting\n\
+    bugs or requesting features please visit: https://github.com/ktp-dev/KTPuild\n\
+    \n\
+Usages:\n\
+    KTPuild\n\
+    KTPuild -h | --help\n\
+    \n\
+Options:\n\
+    -h | --help: display help information\n\n";
 
 
 void run_command(const vector<string>& command) {
@@ -102,19 +117,45 @@ bool is_created(const string &filename){
     return false;
 }
 
-int main() {
+void parse_commandline_args(int argc, char** &argv)
+{
+    struct option longOpts[] = {
+            { "help", no_argument, nullptr, 'h' },
+            { nullptr, 0, nullptr, '\0' }
+        };
+
+    int option, optionIndex;
+
+    while((option = getopt_long(argc, argv, "h", longOpts, &optionIndex))!= -1)
+    {
+        switch(option)
+        {
+            case 'h':{
+            
+                cout<<help;
+            }
+                break;
+            default:
+                break;
+        }
+    }
+}
+
+int main(int argc, char ** argv) {
     /*
-     * 1) get the cpp files
-     * 2) determine what cpp files to recompile
+     * 1) parse for commandline arguments
+     * 2) get the cpp files
+     * 3) determine what cpp files to recompile
      *      - need to recompile if no obj file we have to create it, or if there is an obj file,
      *      but the cpp file has been modified more recently than the obj file
      *      - need to check to see if there is an executable created
-     * 3) if none, we are done
-     * 4) else, recompile them (done!)
-     * 5) relink everything
-     * 6) done!
+     * 4) if none, we are done
+     * 5) else, recompile them (done!)
+     * 6) relink everything
+     * 7) done!
      */
     try {
+        parse_commandline_args(argc, argv); 
         Buildfile buildfile;
         vector<string> cpp_filename = buildfile.get_cpp_files(); //1
         vector<string> changed;
@@ -123,7 +164,7 @@ int main() {
                 changed.push_back(file);
         }
         // if there is nothing to recompile and the executable has been created we are done
-        if (changed.empty() && is_created(Buildfile.executable))
+        if (changed.empty() && is_created(buildfile.get_executable_name()))
             return 0; //3
 
         compile_object_files(buildfile, changed); //4

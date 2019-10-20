@@ -5,18 +5,20 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <getopt.h>
+#include <string>
 
 using namespace std;
 const int MAX_PROCESSES = 4;
 const char* const COMPILER = "g++";
 
-const string help= "\n\
+const string help_header = "\
 KTPuild\n\
     An application to help making the compiling of large projects easier. The\n\
     intended use for EECS 280 and 281 students attending the University of \n\
     Michigan. Built and maintained by Kappa Theta Pi Alpha Chapter. For reporting\n\
-    bugs or requesting features please visit: https://github.com/ktp-dev/KTPuild\n\
-    \n\
+    bugs or requesting features please visit: https://github.com/ktp-dev/KTPuild\n";
+
+const string help_msg = "\n\
 Usages:\n\
     KTPuild\n\
     KTPuild -h | --help\n\
@@ -117,7 +119,7 @@ bool is_created(const string &filename){
     return false;
 }
 
-void parse_commandline_args(int argc, char** &argv)
+bool parse_commandline_args(int argc, char** &argv)
 {
     struct option longOpts[] = {
             { "help", no_argument, nullptr, 'h' },
@@ -130,15 +132,20 @@ void parse_commandline_args(int argc, char** &argv)
     {
         switch(option)
         {
-            case 'h':{
-            
-                cout<<help;
+            case 'h':
+            {
+                cout<<help_header;
+                return false;
             }
-                break;
+
             default:
+            {
+                return false;
                 break;
+            }
         }
     }
+    return true;
 }
 
 int main(int argc, char ** argv) {
@@ -155,7 +162,17 @@ int main(int argc, char ** argv) {
      * 7) done!
      */
     try {
-        parse_commandline_args(argc, argv); 
+
+        /*
+        parse command line arguments, if we get false back we encountered either a help or invalid
+        option and should exit the program while displaying the help message.
+        */
+        if(parse_commandline_args(argc, argv) == false)
+        {
+            cout << help_msg;
+            return 0;
+        } 
+
         Buildfile buildfile;
         vector<string> cpp_filename = buildfile.get_cpp_files(); //1
         vector<string> changed;

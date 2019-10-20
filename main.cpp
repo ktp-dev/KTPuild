@@ -92,7 +92,7 @@ void link_executable(const Buildfile& buildfile, const vector<string>& cpp_files
     }
 }
 
-bool is_created(const string filename){
+bool is_created(const string &filename){
 
     // tests for the existence of the file with success being a 0
     if(access(filename.c_str(), F_OK) == 0)
@@ -105,7 +105,7 @@ bool is_created(const string filename){
 int main() {
     /*
      * 1) get the cpp files
-     * 2) determine what files to recompile
+     * 2) determine what cpp files to recompile
      *      - need to recompile if no obj file we have to create it, or if there is an obj file,
      *      but the cpp file has been modified more recently than the obj file
      *      - need to check to see if there is an executable created
@@ -122,7 +122,7 @@ int main() {
             if (has_changed(file))
                 changed.push_back(file);
         }
-        // if there is nothing to reompile and the executable has been created we are done
+        // if there is nothing to recompile and the executable has been created we are done
         if (changed.empty() && is_created(Buildfile.executable))
             return 0; //3
 

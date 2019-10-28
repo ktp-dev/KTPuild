@@ -13,8 +13,8 @@ const char* const COMPILER = "g++";
 
 const string help_header = "\
 KTPuild\n\
-    An application to help making the compiling of large projects easier. The\n\
-    intended use for EECS 280 and 281 students attending the University of \n\
+    An application that makes the compiling of large projects easier. The\n\
+    intended use for EECS 280 students attending the University of \n\
     Michigan. Built and maintained by Kappa Theta Pi Alpha Chapter. For reporting\n\
     bugs or requesting features please visit: https://github.com/ktp-dev/KTPuild\n";
 
@@ -134,14 +134,12 @@ bool parse_commandline_args(int argc, char** &argv)
         {
             case 'h':
             {
-                cout<<help_header;
+                std::cout<<(help_header + help_msg);
                 return false;
             }
-
             default:
             {
-                return false;
-                break;
+                throw std::runtime_error(help_msg);
             }
         }
     }
@@ -167,10 +165,9 @@ int main(int argc, char ** argv) {
         parse command line arguments, if we get false back we encountered either a help or invalid
         option and should exit the program while displaying the help message.
         */
-        if(parse_commandline_args(argc, argv) == false)
+        if(!parse_commandline_args(argc, argv))
         {
-            cout << help_msg;
-            return 0;
+           return 1;
         } 
 
         Buildfile buildfile;

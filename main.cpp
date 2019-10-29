@@ -126,9 +126,9 @@ bool parse_commandline_args(int argc, char** &argv)
             { nullptr, 0, nullptr, '\0' }
         };
 
-    int option, optionIndex;
+    int option;
 
-    while((option = getopt_long(argc, argv, "h", longOpts, &optionIndex))!= -1)
+    while((option = getopt_long(argc, argv, "h", longOpts, nullptr))!= -1)
     {
         switch(option)
         {
@@ -180,6 +180,21 @@ int main(int argc, char ** argv) {
         // if there is nothing to recompile and the executable has been created we are done
         if (changed.empty() && is_created(buildfile.get_executable_name()))
             return 0; //3
+
+int main()
+{
+
+}
+
+int main()
+{
+
+}
+
+int main()
+{
+
+}
 
         compile_object_files(buildfile, changed); //4
         link_executable(buildfile, cpp_filename); //4

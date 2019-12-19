@@ -1,6 +1,6 @@
-{
+[{
     "Name": "KTPuild",
     "Flags": ["-Wall", "-pedantic", "-std=c++1z", "-g3"],
     "Postcmd": "echo \"hi\"",
     "Sources": ["Buildfile.cpp", "main.cpp", "CppFile.cpp"]
-}
+}]

@@ -6,10 +6,10 @@
 //  Copyright © 2019 Nathan Brown. All rights reserved.
 //
 
-#include <stdio.h>
 #include "Buildfile.h"
-#include <fstream>
+#include "BuildfileEntry.h"
 #include "nlohmann/json.hpp"
+#include <fstream>
 #include <iostream>
 #include <stdexcept>
 
@@ -26,22 +26,25 @@ Buildfile :: Buildfile(){
 
   //parses JSON file. Will throw if invalid JSON
   fs >> data;
-
-  //set executable name
-  executable = data["Name"];
-
-  //set the compilation flags
-  for(auto &i: data["Flags"]){
-    compilation_flags.push_back(i);
+  if(!data.is_array()) {
+      throw std::runtime_error("Error! Buildfile.json must be in an array format. If you're seeing this, adding '[' to the beginning of Buildfile.json and ']' to the end will likely fix this issue.");
   }
-
-  //set the linker flags. For now they are the same as the compilation flags, but
-  //we may want to provide the ability to override this
-  linker_flags = compilation_flags;
-
-  //set the sources
-  for(auto &i: data["Sources"]){
-    cpp_files.push_back(i);
+  BuildfileEntry main;
+  bool found_main = false;
+  for(const auto& entry : data) {
+    BuildfileEntry current{entry["Sources"], entry["Flags"], entry["Flags"], entry["Name"], entry.value("test", false)};
+    if(current.is_test) {
+        entries.emplace_back(std::move(current));
+    } else if(found_main) {
+        throw std::runtime_error("Error! Multiple non-test entries were found. This is currently not supported. Please mark one of them as a test executable by adding \"test\": true accordingly"); //TODO: include names of exes in conflict in error message
+    } else {
+        main = std::move(current);
+        found_main = true;
+    }
+  }
+  entries.emplace_back(std::move(main));
+  if(entries.empty() || entries.back().is_test) {
+      throw std::runtime_error("Error! Did not find a non-test executable. This is currently not supported");
   }
 }
 

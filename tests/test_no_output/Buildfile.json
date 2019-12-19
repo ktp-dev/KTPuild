@@ -1,0 +1,10 @@
+[{
+    "Name": "main.exe",
+    "Flags": ["-Wall", "-pedantic", "-std=c++1z", "-g3"],
+    "Sources": ["main.cpp", "math.cpp"]
+},{
+    "Name": "test1.exe",
+    "Flags": ["-Wall", "-pedantic", "-std=c++1z", "-g3"],
+    "Sources": ["math.cpp", "test1.cpp"],
+    "test": true
+}]

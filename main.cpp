@@ -45,7 +45,7 @@ void compile_object_files(const Buildfile& buildfile, const vector<string>& chan
     //Can construct the g++ [FLAGS] section now- it is the same for every file
     vector<string> command;
     command.push_back(COMPILER);
-    for (string &flag : buildfile.get_compilation_flags()) {
+    for (const string &flag : buildfile.get_compilation_flags()) {
         command.push_back(flag);
     }
     for (const string &filename : changed_files) {
@@ -105,9 +105,9 @@ int main() {
      */
     try {
         Buildfile buildfile;
-        vector<string> cpp_filename = buildfile.get_cpp_files(); //1
+        const vector<string>& cpp_filename = buildfile.get_cpp_files(); //1
         vector<string> changed;
-        for (string &file : cpp_filename) { //2
+        for (const string &file : cpp_filename) { //2
             if (has_changed(file))
                 changed.push_back(file);
         }

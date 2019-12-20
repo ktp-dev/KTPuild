@@ -38,14 +38,14 @@ int wait_or_throw(const std::string& msg) {
     return ret;
 }
 
-void compile_object_files(const Buildfile& buildfile, const vector<string>& changed_files) {
+void compile_object_files(const BuildfileEntry& entry, const vector<string>& changed_files) {
     int num_processes = 0;
     //Construct the g++ compilation command
     //g++ [FLAGS] -o [OBJ FILENAME] -c [CPP FILENAME]
     //Can construct the g++ [FLAGS] section now- it is the same for every file
     vector<string> command;
     command.push_back(COMPILER);
-    for (const string &flag : buildfile.get_compilation_flags()) {
+    for (const string &flag : entry.compilation_flags) {
         command.push_back(flag);
     }
     for (const string &filename : changed_files) {
@@ -71,25 +71,44 @@ void compile_object_files(const Buildfile& buildfile, const vector<string>& chan
     while (wait_or_throw("Compilation failed. Stopping")) ;
 }
 
-void link_executable(const Buildfile& buildfile, const vector<string>& cpp_files) {
-    //g++ [LINKING FLAGS] -o output [OBJECT FILES]
-    vector<string> command;
-    command.push_back(COMPILER);
-    for (const string &flag: buildfile.get_linker_flags()) {
-        command.push_back(flag);
-    }
-    command.push_back("-o");
-    command.push_back(buildfile.get_executable_name());
-    for (const string &cpp_file: cpp_files) {
-        command.push_back(convert_to_obj_file(cpp_file));
-    }
+void run_single_command_or_throw(const std::vector<std::string>& command, const std::string& message) {
     if (pid_t id = fork()) {
         //we are parent
-        wait_or_throw("Linking failed");
+        wait_or_throw(message);
     } else {
         //child, executes the command
         run_command(command);
     }
+}
+
+void link_executable(const BuildfileEntry& entry, const vector<string>& cpp_files) {
+    //g++ [LINKING FLAGS] -o output [OBJECT FILES]
+    vector<string> command;
+    command.push_back(COMPILER);
+    for (const string &flag: entry.linker_flags) {
+        command.push_back(flag);
+    }
+    command.push_back("-o");
+    command.push_back(entry.executable);
+    for (const string &cpp_file: cpp_files) {
+        command.push_back(convert_to_obj_file(cpp_file));
+    }
+    run_single_command_or_throw(command, "Linking failed");
+}
+
+void build_executable(const BuildfileEntry& entry) {
+    const vector<string>& cpp_filename = entry.cpp_files; //1
+    vector<string> changed;
+    for (const string &file : cpp_filename) { //2
+        if (has_changed(file))
+            changed.push_back(file);
+    }
+    //now we know what cpp files have changed
+    if (changed.empty()) //TODO: also ensure exe exists
+        return; //3
+
+    compile_object_files(entry, changed); //4
+    link_executable(entry, cpp_filename); //4
 }
 
 int main() {
@@ -105,18 +124,7 @@ int main() {
      */
     try {
         Buildfile buildfile;
-        const vector<string>& cpp_filename = buildfile.get_cpp_files(); //1
-        vector<string> changed;
-        for (const string &file : cpp_filename) { //2
-            if (has_changed(file))
-                changed.push_back(file);
-        }
-        //now we know what cpp files have changed
-        if (changed.empty()) //TODO: also ensure exe exists
-            return 0; //3
-
-        compile_object_files(buildfile, changed); //4
-        link_executable(buildfile, cpp_filename); //4
+        build_executable(buildfile.main_exe);
 
         //step 6 DONE
     }

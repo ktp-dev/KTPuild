@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <string_view>
 
 using namespace std;
 const int MAX_PROCESSES = 4;
@@ -111,7 +112,19 @@ void build_executable(const BuildfileEntry& entry) {
     link_executable(entry, cpp_filename); //4
 }
 
-int main() {
+void run_test(const BuildfileEntry& test_entry) {
+    if(!test_entry.is_test) {
+        throw std::runtime_error("Internal error. Attempted to run a non-test executable as a test");
+    }
+    std::vector<std::string> command{"./" + test_entry.executable};
+    run_single_command_or_throw(command, "Error running " + test_entry.executable);
+}
+
+int main(int argc, char** argv) {
+    bool run_tests = false;
+    if(argc > 1 && std::string_view("test") == argv[1]) {
+        run_tests = true;
+    }
     /*
      * 1) get the cpp files
      * 2) determine what cpp files to recompile
@@ -125,7 +138,12 @@ int main() {
     try {
         Buildfile buildfile;
         build_executable(buildfile.main_exe);
-
+        if(run_tests) {
+            for(auto& test_entry : buildfile.tests) {
+                build_executable(test_entry); //TODO: refacor building and running to a buildfile entry
+                run_test(test_entry);
+            }
+        }
         //step 6 DONE
     }
     catch(std::exception &err) {

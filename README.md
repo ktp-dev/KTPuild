@@ -35,6 +35,8 @@ Once you have access, please read the boards description. It should be availabe 
 
 For first-time contributors, I suggest working on something labeled **Quick Win** (the light green color). If there are no Quick Wins available, feel free to partner with someone working on a Quick Win, or dive into work on one of the Epics in the left-hand column.
 
+I also recommend using Codebase.md as a reference guide to the codebase! New users can use it to understand pretty much every line written, and experienced users can reference it to ensure their changes are in the right place.
+
 When you have something to work on, please make a branch for your work. You can do so by running `$ git checkout -b <Desired Branchname>`. Please name your branch something along the lines of the card so people can understand what work is being done on that branch!
 
 Go ahead and make your desired changes! When you're done, ensure everything has been committed (`$ git add -A; $ git commit -m "PUT YOUR COMMIT MSG HERE"`), and pushed `$ git push -u`

@@ -97,6 +97,16 @@ void link_executable(const BuildfileEntry& entry, const vector<string>& cpp_file
     run_single_command_or_throw(command, "Linking failed");
 }
 
+bool is_created(const string &filename){
+
+    // tests for the existence of the file with success being a 0
+    if(access(filename.c_str(), F_OK) == 0)
+    {
+        return true;
+    }
+    return false;
+}
+
 void build_executable(const BuildfileEntry& entry) {
     const vector<string>& cpp_filename = entry.cpp_files; //1
     vector<string> changed;
@@ -105,7 +115,8 @@ void build_executable(const BuildfileEntry& entry) {
             changed.push_back(file);
     }
     //now we know what cpp files have changed
-    if (changed.empty()) //TODO: also ensure exe exists
+    // if there is nothing to recompile and the executable has been created we are done
+    if (changed.empty() && is_created(entry.executable))
         return; //3
 
     compile_object_files(entry, changed); //4
@@ -130,6 +141,7 @@ int main(int argc, char** argv) {
      * 2) determine what cpp files to recompile
      *      - need to recompile if no obj file we have to create it, or if there is an obj file,
      *      but the cpp file has been modified more recently than the obj file
+     *      - need to check to see if there is an executable created
      * 3) if none, we are done
      * 4) else, recompile them (done!)
      * 5) relink everything
@@ -144,7 +156,6 @@ int main(int argc, char** argv) {
                 run_test(test_entry);
             }
         }
-        //step 6 DONE
     }
     catch(std::exception &err) {
         std::cerr << err.what() << std::endl;
